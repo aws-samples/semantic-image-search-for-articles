@@ -146,7 +146,7 @@ Resources:
           - Effect: Allow
             Principal:
               AWS: '*'
-            Action: 'es:*'
+            Action: 'es:ESHttp*'
             Resource: !Sub 'arn:${AWS::Partition}:es:${AWS::Region}:${AWS::AccountId}:domain/*/*'
       EngineVersion: OpenSearch_2.7
       ClusterConfig:

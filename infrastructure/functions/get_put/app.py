@@ -12,7 +12,14 @@ sec = boto3.client("secretsmanager")
 get_secret_value = sec.get_secret_value(SecretId=os.environ["OPENSEARCH_SECRET"])
 secret_value = json.loads(get_secret_value["SecretString"])
 
+
 bedrock = boto3.client("bedrock-runtime")
+
+#https://w.amazon.com/bin/view/AmazonBedrock/Products/GetStarted#HInternalAccess
+#prod.us-west-2.dataplane.bedrock.aws.dev #runtime sdk
+
+bedrock_preview = boto3.client(service_name='bedrock-runtime',region_name='us-west-2', endpoint_url='https://prod.us-west-2.dataplane.bedrock.aws.dev')
+
 os_client = wr.opensearch.connect(
     host=os.environ["OPENSEARCH_ENDPOINT"],
     username=secret_value["username"],
@@ -46,7 +53,7 @@ def summarise_article_titan(payload):
             },
         }
     )
-    response = bedrock.invoke_model(
+    response = bedrock_preview.invoke_model(
         body=body,
         modelId="amazon.titan-text-express-v1",
         accept="application/json",
@@ -65,7 +72,7 @@ def get_vector_titan(payload_summary):
 
     response = bedrock.invoke_model(
         body=body,
-        modelId="amazon.titan-embed-text-v1",
+        modelId="amazon.titan-e1m-medium",
         accept="application/json",
         contentType="application/json",
     )
