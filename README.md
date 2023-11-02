@@ -91,12 +91,11 @@ The Web App allows the user to upload images to S3 and be indexed by OpenSearch 
 
 If there is a need to change the indexed documents in OpenSearch this can be achieved by interacting with OpenSearch through its Kibana Dashboard and the Dev tools within that.
 
-The Kibana dashboard URL is another of the Outputs shown in the CloudFormation Stack and the user credentials for accessing it as held in Secrets
+The Kibana dashboard URL is another of the Outputs shown in the CloudFormation Stack and the user credentials for accessing it as held in Secrets Manager with the name of the secret used provided in the Stack outputs
 
 
 Be sure to:
 
-* Change the title in this README
 * Edit your repository description on GitHub
 
 ## Security
