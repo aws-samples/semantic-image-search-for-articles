@@ -13,9 +13,9 @@ import Box from "@cloudscape-design/components/box";
 import Container from "@cloudscape-design/components/container";
 import FileUpload from "@cloudscape-design/components/file-upload";
 import Alert from "@cloudscape-design/components/alert";
-import S3Image from './components/S3Image';
+// import S3Image from './components/S3Image';
 import React from 'react';
-import { Popover, StatusIndicator } from '@cloudscape-design/components';
+// import { Popover, StatusIndicator } from '@cloudscape-design/components';
 
 import awsExports from "./aws-exports";
 Amplify.configure(awsExports);
@@ -128,115 +128,7 @@ const App = ({ signOut }) => {
             </SpaceBetween>
           }
         >
-          <SpaceBetween size="m">
-          <Container
-            header={
-              <Header
-                variant="h2"
-                description="Example mini articles that work with our small image repositry"
-              >
-                Example mini articles
-              </Header>
-            }
-          >
-            <ul>
-              <li>
-              <span className="custom-wrapping">
-                <Box margin={{ right: 'xxs' }} display="inline-block">
-                  <Popover
-                    size="small"
-                    position="top"
-                    triggerType="custom"
-                    dismissButton={false}
-                    content={<StatusIndicator type="success">Test article copied</StatusIndicator>}
-                  >
-                    <Button
-                    variant="inline-icon"
-                      iconName="copy"
-                      ariaLabel="Copy test article"
-                      onClick={() => {
-                        navigator.clipboard.writeText('I love playing sport on the beach in teams with my friends. We stick up a tall high net, and before long we are all diving to the ground to hit the ball back to the other team.');
-                      }}
-                    />
-                  </Popover>
-                </Box>
-                I love playing sport on the beach in teams with my friends. We stick up a tall high net, and before long we are all diving to the ground to hit the ball back to the other team.
-              </span>
-              </li>
-              <li>
-              <span className="custom-wrapping">
-                <Box margin={{ right: 'xxs' }} display="inline-block">
-                  <Popover
-                    size="small"
-                    position="top"
-                    triggerType="custom"
-                    dismissButton={false}
-                    content={<StatusIndicator type="success">Test article copied</StatusIndicator>}
-                  >
-                    <Button
-                    variant="inline-icon"
-                      iconName="copy"
-                      ariaLabel="Copy test article"
-                      onClick={() => {
-                        navigator.clipboard.writeText('Every year, I have been going to Glastonbury to see my favourite bands. We always have a ball and cannot wait to go again the next year.');
-                      }}
-                    />
-                  </Popover>
-                </Box>
-                Every year, I have been going to Glastonbury to see my favourite bands. We always have a ball and cannot wait to go again the next year.
-              </span>
-              </li>
-              <li>
-              <span className="custom-wrapping">
-                <Box margin={{ right: 'xxs' }} display="inline-block">
-                  <Popover
-                    size="small"
-                    position="top"
-                    triggerType="custom"
-                    dismissButton={false}
-                    content={<StatusIndicator type="success">Test article copied</StatusIndicator>}
-                  >
-                    <Button
-                    variant="inline-icon"
-                      iconName="copy"
-                      ariaLabel="Copy test article"
-                      onClick={() => {
-                        navigator.clipboard.writeText('Werner Vogels loved travelling around the globe in his SUV. We see his SUV come up in many scenes as he drives to go and meet various customers in their home towns.');
-                      }}
-                    />
-                  </Popover>
-                </Box>
-                Werner Vogels loved travelling around the globe in his Toyota. We see his Toyota come up in many scenes as he drives to go and meet various customers in their home towns.
-              </span>
-              </li>                            
-              <li>
-              <span className="custom-wrapping">
-                <Box margin={{ right: 'xxs' }} display="inline-block">
-                  <Popover
-                    size="small"
-                    position="top"
-                    triggerType="custom"
-                    dismissButton={false}
-                    content={<StatusIndicator type="success">Test article copied</StatusIndicator>}
-                  >
-                    <Button
-                    variant="inline-icon"
-                      iconName="copy"
-                      ariaLabel="Copy test article"
-                      onClick={() => {
-                        navigator.clipboard.writeText('When I was growing up, I lived in a small fishing town near the Amalfi coast. We would wake up super early every day to catch fish to sell in the village.');
-                      }}
-                    />
-                  </Popover>
-                </Box>
-                When I was growing up, I lived in a small fishing town near the Amalfi coast. We would wake up super early every day to catch fish to sell in the village.
-              </span>
-              </li>              
-            </ul>
           
-                  
-          </Container>             
-          </SpaceBetween>
           <SpaceBetween size="s">
             <Textarea
               onChange={({ detail }) => setArticle(detail.value)}
