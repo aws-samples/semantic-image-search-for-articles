@@ -7,10 +7,10 @@ def lambda_handler(event, context):
     for c in event["Metadata"][0]["Label_Results"]:
         if c["Confidence"] > 80:
             labels += c["Name"] + " "
-    if len(labels.split()) > 4:
+    # if len(labels.split()) > 4:
         results_labels = labels
-    else:
-        results_labels = None
+    # else:
+    #     results_labels = ""
 
     celebs = ""
     for c in event["Metadata"][1]["Celebrity_Results"]:

@@ -9,7 +9,7 @@ bedrock = boto3.client("bedrock-runtime")
 
 def resize_image(photo, bucket, width, height):
     
-    Image.MAX_IMAGE_PIXELS = 10000000
+    Image.MAX_IMAGE_PIXELS = 100000000
     
     with Image.open(photo) as image:    
         
@@ -45,7 +45,7 @@ def get_vector_titan_multi_modal(path, file_type):
 
     response = bedrock.invoke_model(
         body=body,
-        modelId="amazon.titan-embed-image-v1",
+        modelId="amazon.titan-e1m-medium",
         accept="application/json",
         contentType="application/json",
     )

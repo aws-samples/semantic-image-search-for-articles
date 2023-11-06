@@ -24,6 +24,8 @@ Resources:
           - id: W35
             reason: Access logging not required.
     Properties:
+      VersioningConfiguration:
+        Status: Enabled    
       NotificationConfiguration:
         EventBridgeConfiguration:
           EventBridgeEnabled: True
