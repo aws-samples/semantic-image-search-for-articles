@@ -71,7 +71,6 @@ async function getFiles(dir) {
   return files.flat(1);
 }
 
-//todo here or cloudformation?: Change metadata for the files to reflect file type e.g. 	text/html image/svg+xml text/css application/javascript
 async function uploadFile(client, bucket, key, file) {
   const fileData = await fs.readFile(file);
   await client.send(new PutObjectCommand({Bucket: bucket, Key: key, Body: fileData, ContentType: mime.getType(file)}));

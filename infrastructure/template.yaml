@@ -77,7 +77,7 @@ Resources:
           - Sid: CloudFrontOriginOnly
             Action: s3:GetObject
             Effect: Allow
-            Resource: !Sub '${Bucket.Arn}/*'
+            Resource: !Sub '${Bucket.Arn}/public/*'
             Principal:
               Service: cloudfront.amazonaws.com
             Condition:
@@ -110,6 +110,7 @@ Resources:
             Id: !Sub S3Origin
             OriginAccessControlId: !Ref CloudFrontOAC
             S3OriginConfig: {}
+            OriginPath: public
         Enabled: true
         HttpVersion: http2and3
         DefaultRootObject: index.html
@@ -147,7 +148,7 @@ Resources:
         Statement:
           - Effect: Allow
             Principal:
-              AWS: '*'
+              Service: lambda.amazonaws.com
             Action: 'es:ESHttp*'
             Resource: !Sub 'arn:${AWS::Partition}:es:${AWS::Region}:${AWS::AccountId}:domain/*/*'
       EngineVersion: OpenSearch_2.7
