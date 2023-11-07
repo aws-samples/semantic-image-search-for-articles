@@ -265,7 +265,7 @@ Resources:
           Type: Api
           Properties:
             Method: POST
-            Path: /
+            Path: /  
 
   IndexImage:
     Type: AWS::Serverless::StateMachine

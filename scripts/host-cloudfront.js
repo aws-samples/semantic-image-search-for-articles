@@ -73,7 +73,7 @@ async function getFiles(dir) {
 
 async function uploadFile(client, bucket, key, file) {
   const fileData = await fs.readFile(file);
-  await client.send(new PutObjectCommand({Bucket: bucket, Key: key, Body: fileData, ContentType: mime.getType(file)}));
+  await client.send(new PutObjectCommand({Bucket: bucket, Key: `public/${key}`, Body: fileData, ContentType: mime.getType(file)}));
 }
 
 async function run(distFolder, options) {
