@@ -13,7 +13,7 @@ import Box from "@cloudscape-design/components/box";
 import Container from "@cloudscape-design/components/container";
 import FileUpload from "@cloudscape-design/components/file-upload";
 import Alert from "@cloudscape-design/components/alert";
-// import S3Image from './components/S3Image';
+import S3Image from './components/S3Image';
 import React from 'react';
 // import { Popover, StatusIndicator } from '@cloudscape-design/components';
 
@@ -153,7 +153,7 @@ const App = ({ signOut }) => {
                     <Box
                       textAlign="center"
                     >
-                      <img src={`${awsExports.cloudfront_url}/${result.image_path.split("/").slice(3).join("/")}`} style={{ width: "100%" }} alt={result.image_path} />
+                      <S3Image s3Uri={result.image_path} />
                     </Box>
                   </Container>
                 </div>
