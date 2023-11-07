@@ -46,7 +46,7 @@ def summarise_article_titan(payload):
         {
             "inputText": prompt,
             "textGenerationConfig": {
-                "maxTokenCount": 4096,
+                "maxTokenCount": 99,  # Max tokens input for embedding model 
                 "stopSequences": [],
                 "temperature": 0,
                 "topP": 1,
@@ -178,28 +178,32 @@ def lambda_handler(event, context):
         index_document(os_document)
         return {"Vector": vector}
     elif event["httpMethod"] == "POST":
-        person_names = get_names(event["body"])
-        summarize_text = summarise_article_titan(event["body"])
-        # summarized_text = {"text_inputs": [summarize_text]}
-        vector = get_vector_titan(summarize_text)
-        if len(person_names) > 0:
-            os_results = search_document_celeb_context(person_names, vector)
-            results = [
-                {k: os_results[k][n] for k in os_results.keys()}
-                for n in os_results[list(os_results.keys())[0]].keys()
-            ] 
+        if len(event["body"]) > 20000:
+            logger.info('## Text too long')            
+            return {"statusCode": 400, "body": json.dumps("Text too long")}
         else:
-            os_results = search_document_vector(vector)
-            results = [
-                {k: os_results[k][n] for k in os_results.keys()}
-                for n in os_results[list(os_results.keys())[0]].keys()
-            ]
-        return {
-            "statusCode": 200,
-            "headers": {
-                "Access-Control-Allow-Origin": "*",
-                "Access-Control-Allow-Headers": "*",
-                "Access-Control-Allow-Methods": "*",
-            },
-            "body": json.dumps({"results": results}),
-        }
+            person_names = get_names(event["body"])
+            summarize_text = summarise_article_titan(event["body"])
+            # summarized_text = {"text_inputs": [summarize_text]}
+            vector = get_vector_titan(summarize_text)
+            if len(person_names) > 0:
+                os_results = search_document_celeb_context(person_names, vector)
+                results = [
+                    {k: os_results[k][n] for k in os_results.keys()}
+                    for n in os_results[list(os_results.keys())[0]].keys()
+                ] 
+            else:
+                os_results = search_document_vector(vector)
+                results = [
+                    {k: os_results[k][n] for k in os_results.keys()}
+                    for n in os_results[list(os_results.keys())[0]].keys()
+                ]
+            return {
+                "statusCode": 200,
+                "headers": {
+                    "Access-Control-Allow-Origin": "*",
+                    "Access-Control-Allow-Headers": "*",
+                    "Access-Control-Allow-Methods": "*",
+                },
+                "body": json.dumps({"results": results}),
+            }
