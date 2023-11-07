@@ -5,19 +5,19 @@
 ![Architecture diagram - Semantic Image search](arch-diagram-semantic-image-search.png?raw=true "Architecture diagram - Semantic Image search")
 
 These following steps talk through the sequence of actions that enable semantic image and celebrity search.
-1.	You upload an image to an Amazon Simple Storage Service (Amazon S3) bucket
+1.	You upload an image to an Amazon S3 bucket
 2.	Amazon EventBridge listens to this event, and then triggers an AWS Step function execution
-3.	The Step Function takes the image Amazon S3 details and runs 3 parallel actions
+3.	The Step Function takes the Amazon S3 image details and runs 3 parallel actions
 1.	API call to Amazon Rekognition DetectLabels to extract object metadata
 2.	API call to Amazon Rekognition RecognizeCelebrities APIs to extract any known celebrities
-3.	AWS Lambda resizes the image to accepted max dimensions for the model and generates an embedding direct from the image input
+3.	AWS Lambda resizes the image to accepted max dimensions for the ML embedding model and generates an embedding direct from the image input
 4.	The Lambda function then inserts the image object metadata and celebrity name(s) if present, and the embedding as a k-NN vector into an OpenSearch Service index
-5.	Amazon S3 hosts a simple static website, served by an Amazon CloudFront distribution. The front-end user interface (UI) allows you to authenticate with the application using Amazon Cognito to search for images
+5.	Amazon S3 hosts a simple static website, distributed by an Amazon CloudFront. The front-end user interface (UI) allows you to authenticate with the application using Amazon Cognito to search for images
 6.	You submit an article or some text via the UI
 7.	Another Lambda function calls Amazon Comprehend to detect any names in the text as potential celebrities
-8.	The function then summarizes the text to get the pertinent points from the article
-9.	The function generates an embedding of the summarized article
-10.	The function then searches OpenSearch Service image index for any image matching the celebrity name and the k-nearest neighbors for the vector using cosine similarity
+8.	The function then summarizes the text to get the pertinent points from the article Using Titan Text G1 - Express
+9.	The function generates an embedding of the summarized article using the Titan multi-modal model.
+10.	The function then searches OpenSearch Service image index for images matching the celebrity name and the k-nearest neighbors for the vector using cosine similarity, using Exact k-NN with scoring script. 
 11.	Amazon CloudWatch and AWS X-Ray give you observability into the end-to-end workflow to alert you of any issues.
 
 
@@ -55,17 +55,6 @@ The deployment of the solution is achieved with 2 commands:
 
 ```bash
 npm install
-```
-
-Once the packages are downloaded:
-
-```bash
-npm audit
-```
-If issues present, run this:
-
-```bash
-npm audit fix
 ```
 
 Once the packages are downloaded:

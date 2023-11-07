@@ -11,6 +11,8 @@ def resize_image(photo, bucket, width, height):
     
     Image.MAX_IMAGE_PIXELS = 100000000
     
+    with Image.open(photo) as image:
+        image.verify()
     with Image.open(photo) as image:    
         
         if image.format in ["JPEG", "PNG"]:
