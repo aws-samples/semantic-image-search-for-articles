@@ -47,7 +47,7 @@ These following steps talk through the sequence of actions that enable semantic 
 You can run these commands from your command line/terminal, or you could even use AWS Cloud9. 
 
 ```bash
-git clone https://github.com/aws-samples/aws-semantic-image-search.git
+git clone https://github.com/aws-samples/semantic-image-search-for-articles.git
 cd aws-semantic-image-search
 ```
 
