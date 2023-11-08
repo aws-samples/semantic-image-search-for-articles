@@ -143,6 +143,9 @@ Resources:
   OpenSearchServiceDomain:
     Type: AWS::OpenSearchService::Domain
     Properties:
+      DomainName: !Sub
+                  - 'os-${id}'
+                  - id: !Select [ "4", !Split [ "-", !Select [ "2", !Split [ "/", !Ref "AWS::StackId" ] ] ] ]
       AccessPolicies:
         Version: 2012-10-17
         Statement:
@@ -150,7 +153,9 @@ Resources:
             Principal:
               AWS: '*'
             Action: 'es:ESHttp*'
-            Resource: !Sub 'arn:${AWS::Partition}:es:${AWS::Region}:${AWS::AccountId}:domain/*/*'
+            Resource: !Sub
+                        - 'arn:${AWS::Partition}:es:${AWS::Region}:${AWS::AccountId}:domain/os-${id}/*'
+                        - id: !Select [ "4", !Split [ "-", !Select [ "2", !Split [ "/", !Ref "AWS::StackId" ] ] ] ]
       EngineVersion: OpenSearch_2.7
       ClusterConfig:
         InstanceType: r6g.xlarge.search
