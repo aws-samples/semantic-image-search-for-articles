@@ -38,29 +38,75 @@ These following steps talk through the sequence of actions that enable semantic 
 
 - npm
 
-    The installation of the packages required to run the web application locally, or build it for remote deployment, require npm.    
+    The installation of the packages required to run the web application locally, or build it for remote deployment, require npm.  
+
+# Amazon Bedrock requirements
+**Base Models Access**
+
+If you are looking to interact with models from Amazon Bedrock, you need to [request access to the base models in one of the regions where Amazon Bedrock is available](https://console.aws.amazon.com/bedrock/home?#/modelaccess). Make sure to read and accept models' end-user license agreements or EULA.
+
+Note:
+- You can deploy the solution to a different region from where you requested Base Model access.
+- **While the Base Model access approval is instant, it might take several minutes to get access and see the list of models in the UI.**      
     
 ### Deployment
 
 **This deployment is currently set up to deploy into the us-east-1 region. Please check Amazon Bedrock region availability and update the samconfig.toml file to reflect your desired region.**
 
-You can run these commands from your command line/terminal, or you could even use AWS Cloud9. 
+### Environment setup
+
+#### Deploy with AWS Cloud9
+We recommend deploying with [AWS Cloud9](https://aws.amazon.com/cloud9/). 
+If you'd like to use Cloud9 to deploy the solution, you will need the following before proceeding:
+- select at least `m5.large` as Instance type.
+- use `Amazon Linux 2` as the platform.
+
+You can run these commands from your command line/terminal, or you could use AWS Cloud9. 
+
+1. Clone the repository
 
 ```bash
 git clone https://github.com/aws-samples/semantic-image-search-for-articles.git
+```
+
+2. Move into the cloned repository
+```bash
 cd aws-semantic-image-search
 ```
 
-The deployment of the solution is achieved with 2 commands:
+#### (Optional) Only for Cloud9
+If you use Cloud9, increase the instance's EBS volume to at least 50GB. 
+To do this, run the following command from the Cloud9 terminal:
+```
+./scripts/cloud9-resize.sh
+```
+See the documentation for more details [on environment resize](https://docs.aws.amazon.com/cloud9/latest/user-guide/move-environment.html#move-environment-resize). 
 
+
+Review this file: samconfig.toml
+
+Here you can name your stack, and pick the region you want to deploy in. 
+*Line 19 - region = "us-east-1"*
+Check if the AWS services are all available in the region you are picking. 
+
+As the deployment will deploy Amazon CloudFront, this can take approximately 20 minutes. 
+
+Cloud9 generates STS token's to do the deployment, however, these credentials only last 15 minutes, therefore the token will expire before the deployment is complete, and therefore you won't be able to see the outputs directly from Cloud9. 
+
+[How to Authenticate with short-term credentials](https://docs.aws.amazon.com/cli/latest/userguide/cli-authentication-short-term.html)
+You can export the access key tokens:
 ```bash
-npm install
+export AWS_ACCESS_KEY_ID= <PASTE_ACCESS_KEY>
+export AWS_SECRET_ACCESS_KEY= <PASTE_SECRET_ACCESS_KEY>
+export AWS_SESSION_TOKEN= <>
 ```
 
-Once the packages are downloaded:
+(If the tokens do expire, you can leave the deployment to complete, checking progress within CloudFormation, and then re-run the deployment script below - as the Amazon CloudFront resource will already exist, the deployment will complete quickly)
+
+The deployment of the solution is achieved with the following command:
 
 ```bash
-npm run deploy
+npm install && npm run deploy
 ```
 
 This command will run a series of scripts such as sam build, sam deploy and a few others to set up the front end environment with the correct variables.
@@ -77,15 +123,6 @@ Once complete, the CLI output will show a value for the CloudFront url to be abl
 ## Administration
 
 The Web App allows the user to upload images to S3 and be indexed by OpenSearch as well as issuing queries to OpenSearch to return the top 10 images that are most semantically related to the article content.
-
-If there is a need to change the indexed documents in OpenSearch this can be achieved by interacting with OpenSearch through its Kibana Dashboard and the Dev tools within that.
-
-The Kibana dashboard URL is another of the Outputs shown in the CloudFormation Stack and the user credentials for accessing it as held in Secrets Manager with the name of the secret used provided in the Stack outputs
-
-
-Be sure to:
-
-* Edit your repository description on GitHub
 
 ## Security
 

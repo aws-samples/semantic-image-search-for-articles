@@ -15,6 +15,7 @@ import FileUpload from "@cloudscape-design/components/file-upload";
 import Alert from "@cloudscape-design/components/alert";
 import S3Image from './components/S3Image';
 import React from 'react';
+import Input from "@cloudscape-design/components/input";
 // import { Popover, StatusIndicator } from '@cloudscape-design/components';
 
 import awsExports from "./aws-exports";
