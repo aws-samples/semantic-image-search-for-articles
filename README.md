@@ -1,7 +1,7 @@
 # Semantic image search using Amazon Titan Multi-Modal model
 
 Digital publishers are continuously looking for ways to streamline and automate their media workflows to generate and publish new content as rapidly as they can, but without foregoing quality.
-Adding images to capture the essence of text can improve the reading experience. Machine learning techniques can help you discover such images. ![https://www.journalism.co.uk/news/five-rules-to-make-your-article-images-more-engaging/s2/a789231/](“A striking image is one of the most effective ways to capture audiences' attention and create engagement with your story - but it also has to make sense”). 
+Adding images to capture the essence of text can improve the reading experience. Machine learning techniques can help you discover such images. [“A striking image is one of the most effective ways to capture audiences' attention and create engagement with your story - but it also has to make sense”](https://www.journalism.co.uk/news/five-rules-to-make-your-article-images-more-engaging/s2/a789231/). 
 
 In this aws-samples project, you see how you can use Amazon Titan foundation models to understand an article and find the best images to accompany it, with a click of a button. The Titan multimodal embeddings model can generate an embedding of an image or text or both.
 
