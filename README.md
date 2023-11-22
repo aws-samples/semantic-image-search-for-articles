@@ -73,7 +73,7 @@ Note:
     
 ### Deployment
 
-**This deployment is currently set up to deploy into the us-east-1 region. Please check Amazon Bedrock region availability and update the samconfig.toml file to reflect your desired region.**
+**This deployment is currently set up to deploy into the us-east-1 region. Please check Amazon Bedrock region availability and update the [samconfig.toml](../../blob/dev/samconfig.toml#L19) file to reflect your desired region.**
 
 ### Environment setup
 
@@ -105,7 +105,7 @@ To do this, run the following command from the Cloud9 terminal:
 See the documentation for more details [on environment resize](https://docs.aws.amazon.com/cloud9/latest/user-guide/move-environment.html#move-environment-resize). 
 
 
-Review this file: samconfig.toml
+Review this file: [samconfig.toml](../../blob/dev/samconfig.toml#L19)
 
 Here you can name your stack, and pick the region you want to deploy in. 
 *Line 19 - ``` region = "us-east-1" ``` *
