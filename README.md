@@ -1,5 +1,12 @@
 # Semantic image search using Amazon Titan Multi-Modal model
 
+Digital publishers are continuously looking for ways to streamline and automate their media workflows to generate and publish new content as rapidly as they can, but without foregoing quality.
+Adding images to capture the essence of text can improve the reading experience. Machine learning techniques can help you discover such images. ![https://www.journalism.co.uk/news/five-rules-to-make-your-article-images-more-engaging/s2/a789231/](“A striking image is one of the most effective ways to capture audiences' attention and create engagement with your story - but it also has to make sense”). 
+
+In this aws-samples project, you see how you can use Amazon Titan foundation models to understand an article and find the best images to accompany it, with a click of a button. The Titan multimodal embeddings model can generate an embedding of an image or text or both.
+
+A key concept in semantic search is embeddings. An embedding is a numerical representation of some input - in this case an image, or text or both, in the form of a vector. When you have many vectors, you can measure the distance between them, and vectors which are close in distance are semantically similar or related.
+
 ## Deploying the full stack application
 
 ![Architecture diagram - Semantic Image search](arch-diagram-semantic-image-search.png?raw=true "Architecture diagram - Semantic Image search")
@@ -16,7 +23,7 @@ These following steps talk through the sequence of actions that enable semantic 
 6.	You submit an article or some text via the UI
 7.	Another Lambda function calls Amazon Comprehend to detect any names in the text as potential celebrities
 8.	The function then summarizes the text to get the pertinent points from the article Using Titan Text G1 - Express
-9.	The function generates an embedding of the summarized article using the Titan multi-modal model.
+9.	The function generates an embedding of the summarized article using the Titan multimodal model.
 10.	The function then searches OpenSearch Service image index for images matching the celebrity name and the k-nearest neighbors for the vector using cosine similarity, using Exact k-NN with scoring script. 
 11.	Amazon CloudWatch and AWS X-Ray give you observability into the end-to-end workflow to alert you of any issues.
 
@@ -40,10 +47,18 @@ These following steps talk through the sequence of actions that enable semantic 
 
     The installation of the packages required to run the web application locally, or build it for remote deployment, require npm.  
 
-# Amazon Bedrock requirements
+### Amazon Bedrock requirements
 **Base Models Access**
 
 If you are looking to interact with models from Amazon Bedrock, you need to [request access to the base models in one of the regions where Amazon Bedrock is available](https://console.aws.amazon.com/bedrock/home?#/modelaccess). Make sure to read and accept models' end-user license agreements or EULA.
+
+| Model | Max Token Input | Embedding Dimension | Price for 1K input token | Price for 1K out token | 
+| ------------ | ------- | ----- | ---- | ----- |
+| Amazon Multimodal Embeddings | 100 | 1024 | $TBC | n/a |
+
+When we summarize the model, we can specify the max output tokens, and this insures that we pass in less than 100 tokens to the embedding model. 
+
+The multimodal embedding model also has a max dimension size which we handle as part of the image embedding lambda function. 
 
 Note:
 - You can deploy the solution to a different region from where you requested Base Model access.
@@ -86,22 +101,24 @@ See the documentation for more details [on environment resize](https://docs.aws.
 Review this file: samconfig.toml
 
 Here you can name your stack, and pick the region you want to deploy in. 
-*Line 19 - region = "us-east-1"*
-Check if the AWS services are all available in the region you are picking. 
+*Line 19 - ``` region = "us-east-1" ``` *
+Check if the AWS services are all available in the region you are choosing. 
 
 As the deployment will deploy Amazon CloudFront, this can take approximately 20 minutes. 
 
 Cloud9 generates STS token's to do the deployment, however, these credentials only last 15 minutes, therefore the token will expire before the deployment is complete, and therefore you won't be able to see the outputs directly from Cloud9. 
 
 [How to Authenticate with short-term credentials](https://docs.aws.amazon.com/cli/latest/userguide/cli-authentication-short-term.html)
-You can export the access key tokens:
+You can export the access key tokens, making sure they last at least 30 minutes or 1800 seconds:
 ```bash
 export AWS_ACCESS_KEY_ID= <PASTE_ACCESS_KEY>
 export AWS_SECRET_ACCESS_KEY= <PASTE_SECRET_ACCESS_KEY>
-export AWS_SESSION_TOKEN= <>
+export AWS_SESSION_TOKEN= <PASTE_SESSION_TOKEN>
 ```
 
 (If the tokens do expire, you can leave the deployment to complete, checking progress within CloudFormation, and then re-run the deployment script below - as the Amazon CloudFront resource will already exist, the deployment will complete quickly)
+
+### Run the deployment of the application
 
 The deployment of the solution is achieved with the following command:
 
@@ -118,7 +135,7 @@ You can find the userpool id from the cloudformation output and choose that user
 
 ### Login to your new web application
 
-Once complete, the CLI output will show a value for the CloudFront url to be able to view the web application, e.g. https://d123abc.cloudfront.net/
+Once complete, the CLI output will show a value for the CloudFront url to be able to view the web application, e.g. https://d123abc.cloudfront.net/ - you can also see this in the CloudFormation outputs.
 
 ## Administration
 
