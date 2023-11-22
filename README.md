@@ -28,6 +28,13 @@ These following steps talk through the sequence of actions that enable semantic 
 11.	Amazon CloudWatch and AWS X-Ray give you observability into the end-to-end workflow to alert you of any issues.
 
 
+### Conclusion
+In this example, you saw how to use Amazon Rekognition, Amazon Comprehend, Amazon Bedrock, and OpenSearch Service to extract metadata from your images and then use ML techniques to discover them automatically using celebrity and semantic search. This is particularly important within the publishing industry, where speed matters in getting fresh content out quickly and to multiple platforms.
+
+As a next step, deploy the solution in your AWS account and upload some of your own images for testing how semantic search can work for you. 
+
+### Deploy steps
+
 ### Pre-requisites
 
 - SAM cli
@@ -140,6 +147,12 @@ Once complete, the CLI output will show a value for the CloudFront url to be abl
 ## Administration
 
 The Web App allows the user to upload images to S3 and be indexed by OpenSearch as well as issuing queries to OpenSearch to return the top 10 images that are most semantically related to the article content.
+
+
+### Cleaning up
+To avoid incurring future charges, delete the resources.
+1.	Find the S3 bucket deployed with this solution and empty the bucket
+2.	Go to CloudFormation, choose the stack that you deployed via the deploy script mentioned above, and delete the stack. 
 
 ## Security
 
