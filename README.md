@@ -108,7 +108,7 @@ See the documentation for more details [on environment resize](https://docs.aws.
 Review this file: [samconfig.toml](../../blob/dev/samconfig.toml#L19)
 
 Here you can name your stack, and pick the region you want to deploy in. 
-*Line 19 - ``` region = "us-east-1" ``` *
+* `region = "us-east-1"`
 Check if the AWS services are all available in the region you are choosing. 
 
 As the deployment will deploy Amazon CloudFront, this can take approximately 20 minutes. 
@@ -133,12 +133,16 @@ The deployment of the solution is achieved with the following command:
 npm install && npm run deploy
 ```
 
-This command will run a series of scripts such as sam build, sam deploy and a few others to set up the front end environment with the correct variables.
+This command will run a series of scripts such as `sam build`, `sam deploy` and a few others to set up the front end environment with the correct variables.
+
+![Cloud9 Deployment complete](assets/deployment-complete.png?raw=true "Cloud9 Deployment complete")
 
 ### Create login details for the web application
 The authenication is managed by Amazon Cognito. You will need to create a new user to be able to login. 
 
 You can find the userpool id from the cloudformation output and choose that userpool and create a new user there to login with.
+
+![Amazon Cognito - User creation](assets/cognito-user-setup.png?raw=true "Amazon Cognito - User creation")
 
 ### Login to your new web application
 
@@ -148,11 +152,12 @@ Once complete, the CLI output will show a value for the CloudFront url to be abl
 
 The Web App allows the user to upload images to S3 and be indexed by OpenSearch as well as issuing queries to OpenSearch to return the top 10 images that are most semantically related to the article content.
 
-
 ### Cleaning up
 To avoid incurring future charges, delete the resources.
 1.	Find the S3 bucket deployed with this solution and empty the bucket
 2.	Go to CloudFormation, choose the stack that you deployed via the deploy script mentioned above, and delete the stack. 
+
+![Amazon CloudFormation stacks](assets/deployment-cfn.png.png?raw=true "Amazon CloudFormation stacks")
 
 ## Security
 
