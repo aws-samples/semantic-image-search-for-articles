@@ -7,9 +7,11 @@ In this aws-samples project, you see how you can use Amazon Titan foundation mod
 
 A key concept in semantic search is embeddings. An embedding is a numerical representation of some input - in this case an image, or text or both, in the form of a vector. When you have many vectors, you can measure the distance between them, and vectors which are close in distance are semantically similar or related.
 
+![sample](assets/semantic-search-demo.gif "Semantic Image Search Demo")
+
 ## Deploying the full stack application
 
-![Architecture diagram - Semantic Image search](arch-diagram-semantic-image-search.png?raw=true "Architecture diagram - Semantic Image search")
+![Architecture diagram - Semantic Image search](assets/arch-diagram-semantic-image-search.png?raw=true "Architecture diagram - Semantic Image search")
 
 These following steps talk through the sequence of actions that enable semantic image and celebrity search.
 1.	You upload an image to an Amazon S3 bucket
