@@ -109,6 +109,7 @@ Review this file: [samconfig.toml](../../blob/dev/samconfig.toml#L19)
 
 Here you can name your stack, and pick the region you want to deploy in. 
 * `region = "us-east-1"`
+
 Check if the AWS services are all available in the region you are choosing. 
 
 As the deployment will deploy Amazon CloudFront, this can take approximately 20 minutes. 
@@ -157,7 +158,7 @@ To avoid incurring future charges, delete the resources.
 1.	Find the S3 bucket deployed with this solution and empty the bucket
 2.	Go to CloudFormation, choose the stack that you deployed via the deploy script mentioned above, and delete the stack. 
 
-![Amazon CloudFormation stacks](assets/deployment-cfn.png.png?raw=true "Amazon CloudFormation stacks")
+![Amazon CloudFormation stacks](assets/deployment-cfn.png?raw=true "Amazon CloudFormation stacks")
 
 ## Security
 
