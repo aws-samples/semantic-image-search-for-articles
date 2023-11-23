@@ -1,0 +1,133 @@
+AWSTemplateFormatVersion: 2010-09-09
+
+Resources:
+
+  AuthRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: 2012-10-17
+        Statement:
+          - Effect: Allow
+            Principal:
+              Federated: cognito-identity.amazonaws.com
+            Action: sts:AssumeRoleWithWebIdentity
+            Condition:
+              StringEquals:
+                'cognito-identity.amazonaws.com:aud': !Ref IdentityPool
+              'ForAnyValue:StringLike':
+                'cognito-identity.amazonaws.com:amr': authenticated
+
+  UnauthRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: 2012-10-17
+        Statement:
+          - Effect: Allow
+            Principal:
+              Federated: cognito-identity.amazonaws.com
+            Action: sts:AssumeRoleWithWebIdentity
+            Condition:
+              StringEquals:
+                'cognito-identity.amazonaws.com:aud': !Ref IdentityPool
+              'ForAnyValue:StringLike':
+                'cognito-identity.amazonaws.com:amr': unauthenticated
+
+  UserPool:
+    Type: AWS::Cognito::UserPool
+    UpdateReplacePolicy: Delete
+    DeletionPolicy: Delete
+    Metadata:
+      cfn_nag:
+        rules_to_suppress:
+          - id: F78
+            reason: MFA not required.
+    Properties:
+      AutoVerifiedAttributes:
+        - email
+      EmailVerificationMessage: Your verification code is {####}
+      EmailVerificationSubject: Your verification code
+      MfaConfiguration: 'OFF'
+      Policies:
+        PasswordPolicy:
+          MinimumLength: 8
+          RequireLowercase: false
+          RequireNumbers: false
+          RequireSymbols: false
+          RequireUppercase: false
+      Schema:
+        - Mutable: true
+          Name: email
+          Required: true
+      UserAttributeUpdateSettings:
+        AttributesRequireVerificationBeforeUpdate:
+          - email
+      UsernameConfiguration:
+        CaseSensitive: false
+
+  UserPoolClientWeb:
+    Type: AWS::Cognito::UserPoolClient
+    Properties:
+      UserPoolId: !Ref UserPool
+      RefreshTokenValidity: 30
+      TokenValidityUnits:
+        RefreshToken: days
+
+  UserPoolClient:
+    Type: AWS::Cognito::UserPoolClient
+    Properties:
+      UserPoolId: !Ref UserPool
+      GenerateSecret: False
+      RefreshTokenValidity: 30
+      TokenValidityUnits:
+        RefreshToken: days
+
+  IdentityPool:
+    Type: AWS::Cognito::IdentityPool
+    Properties:
+      AllowUnauthenticatedIdentities: False
+      CognitoIdentityProviders:
+        - ClientId: !Ref UserPoolClient
+          ProviderName: !Sub cognito-idp.${AWS::Region}.amazonaws.com/${UserPool}
+        - ClientId: !Ref UserPoolClientWeb
+          ProviderName: !Sub cognito-idp.${AWS::Region}.amazonaws.com/${UserPool}
+
+  IdentityPoolRoleMap:
+    Type: AWS::Cognito::IdentityPoolRoleAttachment
+    Properties:
+      IdentityPoolId: !Ref IdentityPool
+      Roles:
+        unauthenticated: !GetAtt UnauthRole.Arn
+        authenticated: !GetAtt AuthRole.Arn
+
+Outputs:
+
+  IdentityPoolId:
+    Description: Id for the identity pool
+    Value: !Ref IdentityPool
+
+  IdentityPoolName:
+    Value: !GetAtt IdentityPool.Name
+
+  UserPoolId:
+    Description: Id for the user pool
+    Value: !Ref UserPool
+
+  UserPoolArn:
+    Description: Arn for the user pool
+    Value: !GetAtt UserPool.Arn
+
+  UserPoolName:
+    Value: !Ref UserPool
+
+  AppClientIDWeb:
+    Description: The user pool app client id for web
+    Value: !Ref UserPoolClientWeb
+
+  AppClientID:
+    Description: The user pool app client id
+    Value: !Ref UserPoolClient
+
+  AuthRoleName:
+    Value: !Ref AuthRole

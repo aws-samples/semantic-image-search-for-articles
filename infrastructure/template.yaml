@@ -1,0 +1,379 @@
+AWSTemplateFormatVersion: 2010-09-09
+
+Transform: AWS::Serverless-2016-10-31
+
+Globals:
+
+  Api:
+    Cors:
+      AllowMethods: "'OPTIONS,POST'"
+      AllowHeaders: "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'"
+      AllowOrigin: "'*'"
+    Auth:
+      ApiKeyRequired: False
+      DefaultAuthorizer: AWS_IAM
+      AddDefaultAuthorizerToCorsPreflight: False
+
+Resources:
+
+  Bucket:
+    Type: AWS::S3::Bucket
+    Metadata:
+      cfn_nag:
+        rules_to_suppress:
+          - id: W35
+            reason: Access logging not required.
+    Properties:
+      VersioningConfiguration:
+        Status: Enabled    
+      NotificationConfiguration:
+        EventBridgeConfiguration:
+          EventBridgeEnabled: True
+      CorsConfiguration:
+        CorsRules:
+          - AllowedHeaders:
+              - '*'
+            AllowedMethods:
+              - GET
+              - PUT
+            AllowedOrigins:
+              - '*'
+            ExposedHeaders:
+              - x-amz-server-side-encryption
+              - x-amz-request-id
+              - x-amz-id-2
+              - ETag
+            MaxAge: 3600
+      OwnershipControls:
+        Rules:
+          - ObjectOwnership: BucketOwnerEnforced
+      PublicAccessBlockConfiguration:
+        BlockPublicAcls: True
+        IgnorePublicAcls: True
+        BlockPublicPolicy: True
+        RestrictPublicBuckets: True
+      BucketEncryption:
+        ServerSideEncryptionConfiguration: 
+          - ServerSideEncryptionByDefault:
+              SSEAlgorithm: AES256
+            BucketKeyEnabled: true
+
+  BucketPolicy:
+    Type: AWS::S3::BucketPolicy
+    Properties:
+      Bucket: !Ref Bucket
+      PolicyDocument:
+        Statement:
+          - Sid: HttpsOnly
+            Action: '*'
+            Effect: Deny
+            Resource:
+              - !GetAtt Bucket.Arn
+              - !Sub '${Bucket.Arn}/*'
+            Principal: '*'
+            Condition:
+              Bool:
+                'aws:SecureTransport': 'false'
+          - Sid: CloudFrontOriginOnly
+            Action: s3:GetObject
+            Effect: Allow
+            Resource: !Sub '${Bucket.Arn}/public/*'
+            Principal:
+              Service: cloudfront.amazonaws.com
+            Condition:
+              StringEquals:
+                'AWS:SourceArn': !Sub arn:${AWS::Partition}:cloudfront::${AWS::AccountId}:distribution/${CloudFrontDistribution.Id}
+
+  CloudFrontOAC:
+    Type: AWS::CloudFront::OriginAccessControl
+    Properties:
+      OriginAccessControlConfig:
+        Description: Web UI
+        Name: !Sub ${AWS::Region}-WebUI-OAC-v3
+        OriginAccessControlOriginType: s3
+        SigningBehavior: always
+        SigningProtocol: sigv4
+
+  CloudFrontDistribution:
+    Type: AWS::CloudFront::Distribution
+    Metadata:
+      cfn_nag:
+        rules_to_suppress:
+          - id: W10
+            reason: Access logging not required.
+          - id: W70
+            reason: Using CloudFront domain.
+    Properties:
+      DistributionConfig:
+        Origins:
+          - DomainName: !GetAtt Bucket.RegionalDomainName
+            Id: !Sub S3Origin
+            OriginAccessControlId: !Ref CloudFrontOAC
+            S3OriginConfig: {}
+            OriginPath: /public
+        Enabled: true
+        HttpVersion: http2and3
+        DefaultRootObject: index.html
+        DefaultCacheBehavior:
+          AllowedMethods:
+            - HEAD
+            - GET
+            - OPTIONS
+          CachePolicyId: '658327ea-f89d-4fab-a63d-7e88639e58f6'
+          TargetOriginId: S3Origin
+          ForwardedValues:
+            QueryString: false
+            Cookies:
+              Forward: none
+          ViewerProtocolPolicy: redirect-to-https
+        PriceClass: PriceClass_All
+        ViewerCertificate:
+          CloudFrontDefaultCertificate: true
+
+  OpenSearchSecret:
+    Type: AWS::SecretsManager::Secret
+    Properties:
+      Description: This is a secret for the OpenSearch credentials
+      GenerateSecretString:
+        SecretStringTemplate: '{"username": "master"}'
+        GenerateStringKey: password
+        PasswordLength: 16
+        ExcludeCharacters: "\"'@/\\"
+
+  OpenSearchServiceDomain:
+    Type: AWS::OpenSearchService::Domain
+    Properties:
+      DomainName: !Sub
+                  - 'os-${id}'
+                  - id: !Select [ "4", !Split [ "-", !Select [ "2", !Split [ "/", !Ref "AWS::StackId" ] ] ] ]
+      AccessPolicies:
+        Version: 2012-10-17
+        Statement:
+          - Effect: Allow
+            Principal:
+              AWS: '*'
+            Action: 'es:ESHttp*'
+            Resource: !Sub
+                        - 'arn:${AWS::Partition}:es:${AWS::Region}:${AWS::AccountId}:domain/os-${id}/*'
+                        - id: !Select [ "4", !Split [ "-", !Select [ "2", !Split [ "/", !Ref "AWS::StackId" ] ] ] ]
+      EngineVersion: OpenSearch_2.7
+      ClusterConfig:
+        InstanceType: r6g.xlarge.search
+      EBSOptions:
+        EBSEnabled: True
+        VolumeSize: 20
+        VolumeType: gp3
+      AdvancedSecurityOptions:
+        AnonymousAuthEnabled: False
+        Enabled: True
+        InternalUserDatabaseEnabled: True
+        MasterUserOptions:
+          MasterUserName: master
+          MasterUserPassword: !Sub '{{resolve:secretsmanager:${OpenSearchSecret}::password}}'
+      NodeToNodeEncryptionOptions:
+        Enabled: True
+      EncryptionAtRestOptions:
+        Enabled: True
+        KmsKeyId: alias/aws/es
+      DomainEndpointOptions:
+        EnforceHTTPS: True
+
+  ImageTextFunction:
+    Type: AWS::Serverless::Function
+    Metadata:
+      cfn_nag:
+        rules_to_suppress:
+          - id: W89
+            reason: VPC not required.
+          - id: W92
+            reason: Reserved concurrency not required.
+    Properties:
+      CodeUri: ./functions/image_text
+      Handler: app.lambda_handler
+      Runtime: python3.11
+
+  ImageEmbeddingFunction:
+    Type: AWS::Serverless::Function
+    Metadata:
+      cfn_nag:
+        rules_to_suppress:
+          - id: W89
+            reason: VPC not required.
+          - id: W92
+            reason: Reserved concurrency not required.
+    Properties:
+      CodeUri: ./functions/image_embedding
+      Handler: app.lambda_handler
+      MemorySize: 512
+      Timeout: 60
+      Runtime: python3.11
+      Policies:
+        - Version: 2012-10-17
+          Statement:
+          - Effect: Allow
+            Action:
+              - bedrock:InvokeModel
+            Resource: '*'
+          - Effect: Allow
+            Action:
+              - s3:GetObject
+            Resource: !Sub arn:${AWS::Partition}:s3:::${Bucket}/uploads/*
+          - Effect: Allow
+            Action:
+              - s3:PutObject
+            Resource: !Sub arn:${AWS::Partition}:s3:::${Bucket}/resized/*
+
+  GetPutFunction:
+    Type: AWS::Serverless::Function
+    Metadata:
+      cfn_nag:
+        rules_to_suppress:
+          - id: W89
+            reason: VPC not required.
+          - id: W92
+            reason: Reserved concurrency not required.
+          - id: W11
+            reason: Resource level permissions not possible.
+    Properties:
+      CodeUri: ./functions/get_put
+      Handler: app.lambda_handler
+      Runtime: python3.11
+      Timeout: 60
+      MemorySize: 512
+      Layers:
+        - !Sub arn:${AWS::Partition}:lambda:${AWS::Region}:336392948345:layer:AWSSDKPandas-Python311:2
+      Environment:
+        Variables:
+          OPENSEARCH_ENDPOINT: !GetAtt OpenSearchServiceDomain.DomainEndpoint
+          OPENSEARCH_SECRET: !Ref OpenSearchSecret
+      Policies:
+        - Version: 2012-10-17
+          Statement:
+          - Effect: Allow
+            Action:
+              - bedrock:InvokeModel
+            Resource: '*'
+          - Effect: Allow
+            Action:
+              - es:ESHttp*
+            Resource: !GetAtt OpenSearchServiceDomain.DomainArn
+          - Effect: Allow
+            Action:
+              - secretsmanager:GetSecretValue
+            Resource: !Ref OpenSearchSecret
+          - Effect: Allow
+            Action:
+              - comprehend:DetectEntities
+            Resource: '*'            
+      Events:
+        POST:
+          Type: Api
+          Properties:
+            Method: POST
+            Path: /  
+
+  IndexImage:
+    Type: AWS::Serverless::StateMachine
+    Properties:
+      DefinitionUri: statemachine.yaml
+      DefinitionSubstitutions:
+        ImageEmbeddingFunctionArn: !GetAtt ImageEmbeddingFunction.Arn
+        ImageTextFunctionArn: !GetAtt ImageTextFunction.Arn
+        GetPutFunctionArn: !GetAtt GetPutFunction.Arn
+      Policies:
+        - Version: 2012-10-17
+          Statement:
+            - Effect: Allow
+              Action:
+                - s3:GetObject
+              Resource: !Sub ${Bucket.Arn}/uploads/*
+            - Effect: Allow
+              Action:
+                - rekognition:DetectLabels
+                - rekognition:RecognizeCelebrities
+              Resource: '*'
+            - Effect: Allow
+              Action:
+                - lambda:InvokeFunction
+              Resource:
+                - !GetAtt ImageTextFunction.Arn
+                - !GetAtt GetPutFunction.Arn
+                - !GetAtt ImageEmbeddingFunction.Arn
+      Events:
+        EBRule:
+          Type: EventBridgeRule
+          Properties:
+            Pattern:
+              source:
+                - aws.s3
+              detail-type:
+                - Object Created
+              detail:
+                bucket:
+                  name:
+                    - !Ref Bucket
+                object:
+                  key:
+                    - prefix: uploads/
+
+  AuthStack:
+    Type: AWS::CloudFormation::Stack
+    UpdateReplacePolicy: Delete
+    DeletionPolicy: Delete
+    Properties:
+      TemplateURL: auth.yaml
+
+  AuthApiPolicy:
+    Type: AWS::IAM::Policy
+    Properties: 
+      Roles: 
+        - !GetAtt AuthStack.Outputs.AuthRoleName
+      PolicyName: AppPermissions
+      PolicyDocument:
+        Version: 2012-10-17
+        Statement:
+          - Effect: Allow
+            Action:
+              - execute-api:Invoke
+            Resource:
+              - !Sub 'arn:${AWS::Partition}:execute-api:${AWS::Region}:${AWS::AccountId}:${ServerlessRestApi}/Prod/POST/'
+          - Effect: Allow
+            Action:
+              - lambda:InvokeFunction
+            Resource:
+              - !GetAtt GetPutFunction.Arn
+          - Effect: Allow
+            Action:
+              - s3:PutObject
+              - s3:GetObject
+            Resource: !Sub '${Bucket.Arn}/uploads/*'
+
+Outputs:
+
+  Region:
+    Value: !Ref AWS::Region
+
+  IdentityPoolId:
+    Value: !GetAtt AuthStack.Outputs.IdentityPoolId
+
+  S3Bucket:
+    Value: !Ref Bucket
+
+  UserPoolsId:
+    Value: !GetAtt AuthStack.Outputs.UserPoolId
+
+  UserPoolsWebClientId:
+    Value: !GetAtt AuthStack.Outputs.AppClientIDWeb
+
+  Endpoint:
+    Value: !Sub https://${ServerlessRestApi}.execute-api.${AWS::Region}.${AWS::URLSuffix}/Prod
+
+  KibanaDashboard:
+    Value:
+      Fn::Sub: https://${OpenSearchServiceDomain.DomainEndpoint}/_dashboards
+
+  OpenSearchCredentialsSecret:
+    Value: !Ref OpenSearchSecret
+
+  CloudFrontUrl:
+    Value: !Sub https://${CloudFrontDistribution.DomainName}

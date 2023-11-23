@@ -1,0 +1,72 @@
+StartAt: Parallel
+States:
+  Parallel:
+    Type: Parallel
+    Branches:
+      - StartAt: DetectLabels
+        States:
+          DetectLabels:
+            Type: Task
+            Resource: arn:aws:states:::aws-sdk:rekognition:detectLabels
+            Parameters:
+              Features:
+                - GENERAL_LABELS
+              MinConfidence: 80
+              Image:
+                S3Object:
+                  Bucket.$: $.detail.bucket.name
+                  Name.$: $.detail.object.key
+            ResultSelector:
+              Label_Results.$: $.Labels
+            End: true
+      - StartAt: RecognizeCelebrities
+        States:
+          RecognizeCelebrities:
+            Type: Task
+            Resource: arn:aws:states:::aws-sdk:rekognition:recognizeCelebrities
+            Parameters:
+              Image:
+                S3Object:
+                  Bucket.$: $.detail.bucket.name
+                  Name.$: $.detail.object.key
+            ResultSelector:
+              Celebrity_Results.$: $.CelebrityFaces
+            End: true
+      - StartAt: ImageEmbedding 
+        States:
+          ImageEmbedding:
+            Type: Task
+            Resource: arn:aws:states:::lambda:invoke
+            Parameters:
+              Payload:
+                body:
+                  bucket.$: $.detail.bucket.name
+                  key.$: $.detail.object.key
+              FunctionName: ${ImageEmbeddingFunctionArn}
+            ResultSelector:
+              Embedding_Results.$: $.Payload.embedding
+            End: true
+    ResultPath: $.Metadata
+    Next: GetImageText
+  GetImageText:
+    Type: Task
+    Resource: arn:aws:states:::lambda:invoke
+    Parameters:
+      Payload.$: $
+      FunctionName: ${ImageTextFunctionArn}
+    ResultSelector:
+      Sentence_labels.$: $.Payload.Sentence_labels
+      Sentence_people.$: $.Payload.Sentence_people
+      Image_embedding.$: $.Payload.Embedding
+    ResultPath: $.ImageText
+    Next: IndexImage
+  IndexImage:
+    Type: Task
+    Resource: arn:aws:states:::lambda:invoke
+    Parameters:
+      Payload.$: $
+      FunctionName: ${GetPutFunctionArn}
+    ResultSelector:
+      Vector.$: $.Payload.Vector
+    ResultPath: $.ImageVector
+    End: True
