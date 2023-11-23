@@ -67,7 +67,7 @@ If you are looking to interact with models from Amazon Bedrock, you need to [req
 
 When we summarize the text in our workflow, we can specify the max output tokens on the [Titan Text – Express model](https://aws.amazon.com/bedrock/titan/), and this ensures that we pass in less than 100 tokens to the embedding model. 
 
-The multimodal embedding model also has a max dimension size which we handle as part of the image embedding lambda function. 
+The multimodal embedding model also has a max image dimension size of 2048x2048 which we handle as part of the image embedding lambda function. 
 
 Note:
 - You can deploy the solution to a different region from where you requested Base Model access.

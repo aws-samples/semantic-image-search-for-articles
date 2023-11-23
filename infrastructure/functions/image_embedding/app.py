@@ -47,7 +47,7 @@ def get_vector_titan_multi_modal(path, file_type):
 
     response = bedrock.invoke_model(
         body=body,
-        modelId="amazon.titan-e1m-medium",
+        modelId="amazon.titan-embed-image-v1",
         accept="application/json",
         contentType="application/json",
     )

@@ -15,11 +15,6 @@ secret_value = json.loads(get_secret_value["SecretString"])
 
 bedrock = boto3.client("bedrock-runtime")
 
-#https://w.amazon.com/bin/view/AmazonBedrock/Products/GetStarted#HInternalAccess
-#prod.us-west-2.dataplane.bedrock.aws.dev #runtime sdk
-
-bedrock_preview = boto3.client(service_name='bedrock-runtime',region_name='us-west-2', endpoint_url='https://prod.us-west-2.dataplane.bedrock.aws.dev')
-
 os_client = wr.opensearch.connect(
     host=os.environ["OPENSEARCH_ENDPOINT"],
     username=secret_value["username"],
@@ -53,7 +48,7 @@ def summarise_article_titan(payload):
             },
         }
     )
-    response = bedrock_preview.invoke_model(
+    response = bedrock.invoke_model(
         body=body,
         modelId="amazon.titan-text-express-v1",
         accept="application/json",
@@ -69,10 +64,10 @@ def summarise_article_titan(payload):
 def get_vector_titan(payload_summary):
 
     body = json.dumps({"inputText": payload_summary})
-
+    #todo check model id
     response = bedrock.invoke_model(
         body=body,
-        modelId="amazon.titan-e1m-medium",
+        modelId="amazon.titan-embed-image-v1",
         accept="application/json",
         contentType="application/json",
     )
