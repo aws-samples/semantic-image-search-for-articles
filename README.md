@@ -1,4 +1,4 @@
-# Semantic image search using Amazon Titan Multi-Modal model
+# Semantic image search using Amazon Titan Multimodal Embeddings model
 
 Digital publishers are continuously looking for ways to streamline and automate their media workflows to generate and publish new content as rapidly as they can, but without foregoing quality.
 Adding images to capture the essence of text can improve the reading experience. Machine learning techniques can help you discover such images. [“A striking image is one of the most effective ways to capture audiences' attention and create engagement with your story - but it also has to make sense”](https://www.journalism.co.uk/news/five-rules-to-make-your-article-images-more-engaging/s2/a789231/). 
