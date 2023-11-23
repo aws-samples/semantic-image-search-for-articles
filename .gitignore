@@ -1,0 +1,4 @@
+.aws-sam/
+node_modules/
+src/aws-exports.js
+dist/
