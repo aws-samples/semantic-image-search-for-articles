@@ -102,7 +102,7 @@ cd aws-semantic-image-search
 If you use Cloud9, increase the instance's EBS volume to at least 50GB. 
 To do this, run the following command from the Cloud9 terminal:
 ```
-./scripts/cloud9-resize.sh
+bash ./scripts/cloud9-resize.sh
 ```
 See the documentation for more details [on environment resize](https://docs.aws.amazon.com/cloud9/latest/user-guide/move-environment.html#move-environment-resize). 
 

@@ -64,7 +64,7 @@ def summarise_article_titan(payload):
 def get_vector_titan(payload_summary):
 
     body = json.dumps({"inputText": payload_summary})
-    #todo check model id
+
     response = bedrock.invoke_model(
         body=body,
         modelId="amazon.titan-embed-image-v1",
