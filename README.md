@@ -157,7 +157,7 @@ The Web App allows the user to upload images to S3 and be indexed by OpenSearch 
 ### Cleaning up
 To avoid incurring future charges, delete the resources.
 1.	Find the S3 bucket deployed with this solution and empty the bucket
-2.	Go to CloudFormation, choose the stack that you deployed via the deploy script mentioned above, and delete the stack. 
+2.	Run ```sam delete``` from the terminal, or Go to CloudFormation, choose the stack that you deployed via the deploy script mentioned above, and delete the stack. 
 
 ![Amazon CloudFormation stacks](assets/deployment-cfn.png?raw=true "Amazon CloudFormation stacks")
 
