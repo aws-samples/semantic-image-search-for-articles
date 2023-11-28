@@ -2,15 +2,15 @@
 
 Digital publishers are continuously looking for ways to streamline and automate their media workflows to generate and publish new content as rapidly as they can, but without foregoing quality.
 
-Adding images to capture the essence of text can improve the reading experience. Machine learning techniques can help you discover such images. [“A striking image is one of the most effective ways to capture audiences' attention and create engagement with your story - but it also has to make sense”](https://www.journalism.co.uk/news/five-rules-to-make-your-article-images-more-engaging/s2/a789231/). 
+Adding images to capture the essence of text can improve the reading experience. Machine learning techniques can help you discover such images. [“A striking image is one of the most effective ways to capture audiences' attention and create engagement with your story - but it also has to make sense”](https://www.journalism.co.uk/news/five-rules-to-make-your-article-images-more-engaging/s2/a789231/){:target="_blank"}. 
 
 In this aws-samples project, you see how you can use Amazon Titan foundation models to quickly understand an article and find the best images to accompany it. This time, you generate the embedding directly from the image.
 
 A key concept in semantic search is embeddings. An embedding is a numerical representation of some input—an image, text, or both—in the form of a vector. When you have many vectors, you can measure the distance between them, and vectors that are close in distance are semantically similar or related.
 
-[Amazon Bedrock](https://aws.amazon.com/bedrock/) is a fully managed service that offers a choice of high-performing foundation models (FMs) from leading AI companies including AI21 Labs, Anthropic, Cohere, Meta, Stability AI, and Amazon with a single API, along with a broad set of capabilities to help you build generative AI applications, simplifying development while maintaining privacy and security.
+[Amazon Bedrock](https://aws.amazon.com/bedrock/){:target="_blank"} is a fully managed service that offers a choice of high-performing foundation models (FMs) from leading AI companies including AI21 Labs, Anthropic, Cohere, Meta, Stability AI, and Amazon with a single API, along with a broad set of capabilities to help you build generative AI applications, simplifying development while maintaining privacy and security.
 
-[Amazon Titan](https://aws.amazon.com/bedrock/titan/) has recently added a new embedding model to its collection, Titan Multimodal Embeddings. This new model can be used for multimodal search, recommendation systems, and other downstream applications.
+[Amazon Titan](https://aws.amazon.com/bedrock/titan/){:target="_blank"} has recently added a new embedding model to its collection, Titan Multimodal Embeddings. This new model can be used for multimodal search, recommendation systems, and other downstream applications.
 
 Multimodal models can understand and analyze data in multiple modalities such as text, image, video, and audio. This latest Amazon Titan model can accept text, images, or both. This means you use the same model to generate embeddings of images and text and use those embeddings to calculate how similar the two are.
 
@@ -47,7 +47,7 @@ As a next step, deploy the solution in your AWS account and upload some of your 
 
 - SAM cli
 
-    The solution uses the [SAM CLI](https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/install-sam-cli.html) for deployment.
+    The solution uses the [SAM CLI](https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/install-sam-cli.html){:target="_blank"} for deployment.
     **Make sure to be using latest version of SAM cli**
 
 - Docker
@@ -65,13 +65,13 @@ As a next step, deploy the solution in your AWS account and upload some of your 
 ### Amazon Bedrock requirements
 **Base Models Access**
 
-If you are looking to interact with models from Amazon Bedrock, you need to [request access to the base models in one of the regions where Amazon Bedrock is available](https://console.aws.amazon.com/bedrock/home?#/modelaccess). Make sure to read and accept models' end-user license agreements or EULA.
+If you are looking to interact with models from Amazon Bedrock, you need to [request access to the base models in one of the regions where Amazon Bedrock is available](https://console.aws.amazon.com/bedrock/home?#/modelaccess){:target="_blank"}. Make sure to read and accept models' end-user license agreements or EULA.
 
 | Model | Max Token Input | Embedding Dimension | Price for 1K input token | Price for 1K out token | 
 | ------------ | ------- | ----- | ---- | ----- |
 | Amazon Multimodal Embeddings | 100 | 1024 | $TBC | n/a |
 
-When we summarize the text in our workflow, we can specify the max output tokens on the [Titan Text – Express model](https://aws.amazon.com/bedrock/titan/), and this ensures that we pass in less than 100 tokens to the embedding model. 
+When we summarize the text in our workflow, we can specify the max output tokens on the [Titan Text – Express model](https://aws.amazon.com/bedrock/titan/){:target="_blank"}, and this ensures that we pass in less than 100 tokens to the embedding model. 
 
 The multimodal embedding model also has a max image dimension size of 2048x2048 which we handle as part of the image embedding lambda function. 
 
@@ -86,7 +86,7 @@ Note:
 ### Environment setup
 
 #### Deploy with AWS Cloud9
-We recommend deploying with [AWS Cloud9](https://aws.amazon.com/cloud9/). 
+We recommend deploying with [AWS Cloud9](https://aws.amazon.com/cloud9/){:target="_blank"}. 
 If you'd like to use Cloud9 to deploy the solution, you will need the following before proceeding:
 - select at least `m5.large` as Instance type.
 - use `Amazon Linux 2` as the platform.
