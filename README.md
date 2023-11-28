@@ -1,11 +1,18 @@
 # Semantic image search using Amazon Titan Multimodal Embeddings model
 
 Digital publishers are continuously looking for ways to streamline and automate their media workflows to generate and publish new content as rapidly as they can, but without foregoing quality.
+
 Adding images to capture the essence of text can improve the reading experience. Machine learning techniques can help you discover such images. [“A striking image is one of the most effective ways to capture audiences' attention and create engagement with your story - but it also has to make sense”](https://www.journalism.co.uk/news/five-rules-to-make-your-article-images-more-engaging/s2/a789231/). 
 
-In this aws-samples project, you see how you can use Amazon Titan foundation models to understand an article and find the best images to accompany it, with a click of a button. The Titan multimodal embeddings model can generate an embedding of an image or text or both.
+In this aws-samples project, you see how you can use Amazon Titan foundation models to quickly understand an article and find the best images to accompany it. This time, you generate the embedding directly from the image.
 
-A key concept in semantic search is embeddings. An embedding is a numerical representation of some input - in this case an image, or text or both, in the form of a vector. When you have many vectors, you can measure the distance between them, and vectors which are close in distance are semantically similar or related.
+A key concept in semantic search is embeddings. An embedding is a numerical representation of some input—an image, text, or both—in the form of a vector. When you have many vectors, you can measure the distance between them, and vectors that are close in distance are semantically similar or related.
+
+[Amazon Bedrock](https://aws.amazon.com/bedrock/) is a fully managed service that offers a choice of high-performing foundation models (FMs) from leading AI companies including AI21 Labs, Anthropic, Cohere, Meta, Stability AI, and Amazon with a single API, along with a broad set of capabilities to help you build generative AI applications, simplifying development while maintaining privacy and security.
+
+[Amazon Titan](https://aws.amazon.com/bedrock/titan/) has recently added a new embedding model to its collection, Titan Multimodal Embeddings. This new model can be used for multimodal search, recommendation systems, and other downstream applications.
+
+Multimodal models can understand and analyze data in multiple modalities such as text, image, video, and audio. This latest Amazon Titan model can accept text, images, or both. This means you use the same model to generate embeddings of images and text and use those embeddings to calculate how similar the two are.
 
 ![sample](assets/semantic-search-demo.gif "Semantic Image Search Demo")
 
