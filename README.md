@@ -70,6 +70,9 @@ If you are looking to interact with models from Amazon Bedrock, you need to [req
 | Model | Max Token Input | Embedding Dimension | Price for 1K input token | Price for 1K output tokens | 
 | ------------ | ------- | ----- | ---- | ----- |
 | Amazon Multimodal Embeddings | 128 | 1,024 (default), 384, 256 | $0.0001 | n/a |
+| Titan Text – Express | 8K | n/a | $0.0013 | $0.0017 |
+
+You will need to request access to both of the models above.
 
 When we summarize the text in our workflow, we can specify the max output tokens on the [Titan Text – Express model](https://aws.amazon.com/bedrock/titan/), and this ensures that we pass in less than 128 tokens to the embedding model. 
 
