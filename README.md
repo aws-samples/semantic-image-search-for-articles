@@ -67,11 +67,11 @@ As a next step, deploy the solution in your AWS account and upload some of your 
 
 If you are looking to interact with models from Amazon Bedrock, you need to [request access to the base models in one of the regions where Amazon Bedrock is available](https://console.aws.amazon.com/bedrock/home?#/modelaccess). Make sure to read and accept models' end-user license agreements or EULA.
 
-| Model | Max Token Input | Embedding Dimension | Price for 1K input token | Price for 1K out token | 
+| Model | Max Token Input | Embedding Dimension | Price for 1K input token | Price for 1K output tokens | 
 | ------------ | ------- | ----- | ---- | ----- |
-| Amazon Multimodal Embeddings | 100 | 1024 | $TBC | n/a |
+| Amazon Multimodal Embeddings | 128 | 1,024 (default), 384, 256 | $0.0001 | n/a |
 
-When we summarize the text in our workflow, we can specify the max output tokens on the [Titan Text – Express model](https://aws.amazon.com/bedrock/titan/), and this ensures that we pass in less than 100 tokens to the embedding model. 
+When we summarize the text in our workflow, we can specify the max output tokens on the [Titan Text – Express model](https://aws.amazon.com/bedrock/titan/), and this ensures that we pass in less than 128 tokens to the embedding model. 
 
 The multimodal embedding model also has a max image dimension size of 2048x2048 which we handle as part of the image embedding lambda function. 
 
