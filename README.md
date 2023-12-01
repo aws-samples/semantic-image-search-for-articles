@@ -70,7 +70,7 @@ If you are looking to interact with models from Amazon Bedrock, you need to [req
 | Model | Max Token Input | Embedding Dimension | Price for 1K input token | Price for 1K output tokens | 
 | ------------ | ------- | ----- | ---- | ----- |
 | Amazon Multimodal Embeddings | 128 | 1,024 (default), 384, 256 | [Bedrock pricing](https://aws.amazon.com/bedrock/pricing/) | n/a |
-| Titan Text – Express | 8K | n/a | [Bedrock pricing](https://aws.amazon.com/bedrock/pricing/) | $0.0017 |
+| Titan Text – Express | 8K | n/a | [Bedrock pricing](https://aws.amazon.com/bedrock/pricing/) |  |
 
 You will need to request access to both of the models above.
 
