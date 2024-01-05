@@ -104,7 +104,7 @@ git clone https://github.com/aws-samples/semantic-image-search-for-articles.git
 
 2. Move into the cloned repository
 ```bash
-cd aws-semantic-image-search
+cd semantic-image-search-for-articles
 ```
 
 #### (Optional) Only for Cloud9
